@@ -5,8 +5,10 @@ import ltd.dreamcode.avalon.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Repository;
 
 @Mapper
+@Repository
 public interface UserMapper {
     String TABLE_NAME = "user";//表的名字
     String INSERT_USER_FIELD = "userName, userPassword, createDate, status,nickName";//表中的字段

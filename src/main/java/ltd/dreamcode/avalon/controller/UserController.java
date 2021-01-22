@@ -19,27 +19,37 @@ public class UserController extends UserServiceImpl {
 
     /**
      * 用户注册控制层
-     * @param param
-     * @throws Exception
+     *
+     * @param userName,userPassword,captchaCode,captchaResult
      * @return
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public Map<String, String> userRegister(User param) {
-        Map<String, String> response = userServiceImpl.userRegister(param);
-        return response;
+    public Map<String, String> userRegister(String userName, String userPassword, String captchaCode, String captchaResult) {
+
+        return userServiceImpl.userRegister(userName, userPassword, captchaCode, captchaResult);
     }
 
+    /**
+     * 用户登录控制层
+     *
+     * @param userName,userPassword,captchaCode,captchaResult
+     * @return
+     */
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Map<String, String> login(String userName, String userPassword, String captchaCode, String captchaResult) {
 
+        return userServiceImpl.userLogin(userName, userPassword, captchaCode, captchaResult);
+    }
 
     /**
-     //     * 用户登录控制层
-     //     * @param userName,userPassword
-     //     * @return String
-     //     * @throws Exception
-     //     */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Map<String, String> login(  String userName,String userPassword){
+     * 令牌验证控制层
+     *
+     * @param token
+     * @return
+     */
+    @RequestMapping(value = "/verifyToken", method = RequestMethod.POST)
+    public Map<String, String> verifyToken(String token) {
 
-        return userServiceImpl.userLogin(userName,userPassword);
+        return userServiceImpl.verifyToken(token);
     }
 }
