@@ -4,6 +4,8 @@ package ltd.dreamcode.avalon.serviceImpl;
 import ltd.dreamcode.avalon.dao.UserMapper;
 import ltd.dreamcode.avalon.entity.User;
 import ltd.dreamcode.avalon.service.UserService;
+import ltd.dreamcode.avalon.utils.BCrypt;
+import ltd.dreamcode.avalon.utils.StringUtils;
 import ltd.dreamcode.avalon.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static ltd.dreamcode.avalon.utils.TokenUtils.token;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -30,15 +30,20 @@ public class UserServiceImpl implements UserService {
     public Map<String, String> userRegister(String userName, String userPassword, String captchaCode, String captchaResult) {
         Long id = userMapper.selectIdByName(userName);
         Map<String, String> result = new HashMap<>(1);
+        if(StringUtils.isEmail(userName)==false){
+            result.put("status","false");
+            result.put("content","请输入有效的邮箱");
+            return result;
+        }
+
         if (id != null) {
             System.out.println("注册失败");
             result.put("status", "false");
             result.put("content", "用户名已存在");
-            return result;
         } else {
             User user = new User();
             user.setUserName(userName);
-            user.setUserPassword(userPassword);
+            user.setUserPassword(BCrypt.hashpw(userPassword,BCrypt.gensalt()));
             // 规定状态0为正常
             user.setStatus(0);
             // 获取当前系统时间作为用户注册时间
@@ -58,8 +63,8 @@ public class UserServiceImpl implements UserService {
             } else {
                 result.put("status", "true");
             }
-            return result;
         }
+        return result;
     }
 
     /**
@@ -72,16 +77,14 @@ public class UserServiceImpl implements UserService {
         Map<String, String> result = new HashMap<>(1);
 
         //用户不存在或密码输入错误
-        if (userMapper.loginUserName(userName) == null || !userMapper.loginUserPassword(userName).equals(userPassword)) {
+        if (userMapper.loginUserName(userName) == null || !BCrypt.checkpw(userPassword,userMapper.loginUserPassword(userName))) {
 
             result.put("status", "false");
-            result.put("content", "用户不存在或密码输入错误");
-            return result;
+            result.put("content", "用户名或密码错误");
 
-        } else if (userMapper.loginUserPassword(userName).equals(userPassword)) {
+        } else{
             result.put("status", "true");
             result.put("content", TokenUtils.token(userName, userPassword));
-            return result;
         }
         return result;
     }
@@ -94,9 +97,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, String> verifyToken(String token) {
         Map<String, String> result = new HashMap<>(1);
-        Boolean b = TokenUtils.verify(token);
-        System.out.println("注册失败");
-        result.put("status", Boolean.toString(b));
+        if(token==null)
+            result.put("status", "false");
+        else
+            result.put("status", Boolean.toString(TokenUtils.verify(token)));
         return result;
     }
 }

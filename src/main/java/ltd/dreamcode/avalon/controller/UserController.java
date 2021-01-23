@@ -1,6 +1,5 @@
 package ltd.dreamcode.avalon.controller;
 
-import ltd.dreamcode.avalon.entity.User;
 import ltd.dreamcode.avalon.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;

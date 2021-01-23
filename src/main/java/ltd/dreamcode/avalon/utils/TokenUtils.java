@@ -10,11 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 /**
  * @desc   使用token验证用户是否登录
- * @author zm
+ * @author FtyLollipop
  **/
-public class TokenUtils {
+public final class TokenUtils {
+
+    private TokenUtils() {};
     //设置过期时间
-    private static final long EXPIRE_DATE=30*60*100000;
+    private static final long EXPIRE_DATE=15*24*60*60*1000;
     //token秘钥
     private static final String TOKEN_SECRET = "FB4UIW1FB5WK74GF42FFL87QMS0A";
 
@@ -57,13 +59,5 @@ public class TokenUtils {
             e.printStackTrace();
             return  false;
         }
-    }
-    public static void main(String[] args) {
-        String username ="zhangsan";
-        String password = "123";
-        String token = token(username,password);
-        System.out.println(token);
-        boolean b = verify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd22yZCI6IjEyMyIsImV4cCI6MTU3ODE5NzQxMywidXNlcm5hbWUiOiJ6aGFuZ3NhbiJ9.IyTZT0tISQQZhGhsNuaqHGV8LD7idjUYjn3MGbulmJg");
-        System.out.println(b);
     }
 }
